@@ -1,5 +1,5 @@
 import { useCallback } from 'react';
-import log from 'electron-log';
+import log from '../utils/logger';
 import useKeyboardShortcuts from './useKeyboardShortcuts';
 
 /**

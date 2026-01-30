@@ -405,7 +405,7 @@ function AppFooter() {
 
 ```javascript
 // In renderer process
-import log from 'electron-log';
+import log from '../utils/logger';
 log.transports.file.level = 'debug';
 
 // Health check service logs:

@@ -1,5 +1,5 @@
 const axios = require('axios');
-const log = require('electron-log');
+const log = require('../utils/logger');
 const TokenManager = require('../security/TokenManager');
 
 /**

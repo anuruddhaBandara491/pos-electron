@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import log from 'electron-log';
+import log from '../utils/logger';
 import '../styles/HealthCheckIndicator.css';
 
 /**

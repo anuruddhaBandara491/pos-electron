@@ -1,4 +1,4 @@
-import log from 'electron-log';
+import log from '../utils/logger';
 import RoleManager from '../utils/RoleManager';
 
 /**
@@ -18,6 +18,13 @@ class AuthService {
     this.currentUser = null;
     this.userRoles = [];
     this.userPermissions = [];
+  }
+
+    get auth() {
+    if (!window.pos || !window.pos.auth) {
+      throw new Error('IPC auth bridge not available');
+    }
+    return window.pos.auth;
   }
 
   /**
@@ -87,17 +94,17 @@ class AuthService {
    */
   async getCurrentUser() {
     try {
-      const user = await window.pos.auth.getCurrentUser();
-      
-      // Cache user data with role normalization
-      if (user) {
-        this._storeUserData(user);
+      if (!window.pos?.auth) {
+        log.warn('Auth IPC not available (browser mode)');
+        return null;
       }
-      
+
+      const user = await this.auth.getCurrentUser();
+      if (user) this._storeUserData(user);
       return user;
     } catch (err) {
-      log.error('Failed to get current user:', err);
-      throw err;
+      log.error('Failed to get current user:', err.message);
+      return null;
     }
   }
 

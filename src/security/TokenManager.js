@@ -14,7 +14,7 @@
  */
 
 const path = require('path');
-const log = require('electron-log');
+const log = require('../utils/logger');
 
 // Try to load keytar for secure storage
 let keytar = null;

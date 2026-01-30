@@ -1,5 +1,5 @@
 import React, { useState, useCallback, useEffect, useRef } from 'react';
-import log from 'electron-log';
+import log from '../utils/logger';
 /* eslint-disable react-hooks/rules-of-hooks */
 import BarcodeSearch from '../components/BarcodeSearch';
 import { useOrder } from '../context/OrderContext';

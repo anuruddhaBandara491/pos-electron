@@ -12,7 +12,7 @@
  * Architecture: Backend is source of truth for receipt content
  */
 
-import log from 'electron-log';
+import log from '../utils/logger';
 
 class ReceiptService {
   constructor(apiClient) {

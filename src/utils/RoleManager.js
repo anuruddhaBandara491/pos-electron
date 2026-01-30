@@ -1,4 +1,4 @@
-const log = require('electron-log');
+const log = require('./logger');
 
 /**
  * Role Management Utility

@@ -1,4 +1,4 @@
-import logger from 'electron-log';
+import logger from '../utils/logger';
 
 /**
  * PaymentService - Handles POS payment operations

@@ -1,5 +1,5 @@
 import { useEffect, useRef } from 'react';
-import log from 'electron-log';
+import log from '../utils/logger';
 
 /**
  * Custom Hook: useKeyboardShortcuts

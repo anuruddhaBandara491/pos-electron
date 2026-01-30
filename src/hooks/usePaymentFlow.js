@@ -1,6 +1,6 @@
 import { useState, useCallback, useRef, useEffect } from 'react';
 import PaymentService from '../services/PaymentService';
-import logger from 'electron-log';
+import logger from '../utils/logger';
 
 /**
  * usePaymentFlow - Hook for managing POS payment operations

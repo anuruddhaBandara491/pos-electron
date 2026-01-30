@@ -1,5 +1,5 @@
 import React, { useState, useCallback, useContext } from 'react';
-import log from 'electron-log';
+import log from '../utils/logger';
 import useBarcodeScan from '../hooks/useBarcodeScan';
 import AuthContext from '../context/AuthContext';
 import '../styles/BarcodeSearch.css';

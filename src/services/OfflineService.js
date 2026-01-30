@@ -13,7 +13,7 @@
  * Architecture: Local Queue → Backend Sync → Confirmation
  */
 
-import log from 'electron-log';
+import log from '../utils/logger';
 import path from 'path';
 import fs from 'fs';
 

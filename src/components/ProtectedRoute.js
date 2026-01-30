@@ -1,6 +1,6 @@
 import React from 'react';
 import { Navigate } from 'react-router-dom';
-import log from 'electron-log';
+import log from '../utils/logger';
 const RoleManager = require('../utils/RoleManager');
 
 /**

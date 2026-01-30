@@ -1,6 +1,4 @@
-// import log from 'electron-log';
-const log = require('electron-log');
-
+import log from '../utils/logger';
 /**
  * Version Service
  * 

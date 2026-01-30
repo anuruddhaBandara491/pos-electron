@@ -262,7 +262,7 @@ static ROUTE_PERMISSIONS = {
 // 9. LOG ROLE-BASED EVENTS
 // ─────────────────────────────────────────────────────────────────────────
 
-import log from 'electron-log';
+import log from '../utils/logger';
 import authService from '../services/AuthService';
 
 // On login

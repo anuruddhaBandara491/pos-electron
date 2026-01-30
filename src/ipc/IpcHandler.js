@@ -1,5 +1,5 @@
 const { ipcMain, dialog, app } = require('electron');
-const log = require('electron-log');
+const log = require('../utils/logger');
 
 /**
  * IPC Handler

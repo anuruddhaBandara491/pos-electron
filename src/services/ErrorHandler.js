@@ -1,4 +1,4 @@
-import log from 'electron-log';
+import log from '../utils/logger';
 
 /**
  * Standardized Error Handler

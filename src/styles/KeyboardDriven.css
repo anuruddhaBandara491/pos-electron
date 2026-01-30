@@ -1,0 +1,426 @@
+/* Keyboard-Driven POS UI Styles */
+
+/* Keyboard hint bar */
+.keyboard-hint {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  padding: 12px 16px;
+  border-radius: 6px;
+  font-size: 13px;
+  margin-top: 12px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  box-shadow: 0 2px 8px rgba(102, 126, 234, 0.2);
+}
+
+.keyboard-hint strong {
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+/* Selected item row highlight */
+.order-item-row {
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.order-item-row:hover {
+  background-color: rgba(102, 126, 234, 0.08) !important;
+}
+
+.order-item-row.selected {
+  background-color: rgba(102, 126, 234, 0.15) !important;
+  box-shadow: inset 3px 0 0 #667eea;
+  font-weight: 500;
+}
+
+.order-item-row.selected .product-name {
+  color: #667eea;
+}
+
+/* Keyboard focus indicator */
+.keyboard-focus-ring {
+  outline: 2px solid #667eea;
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+/* Active button state for keyboard users */
+button:focus-visible {
+  outline: 2px solid #667eea;
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+/* Barcode input (hidden but available for keyboard) */
+.barcode-input-hidden {
+  position: absolute;
+  left: -9999px;
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* Keyboard input visual feedback */
+.keyboard-input-active {
+  border: 2px solid #667eea;
+  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+}
+
+/* Quantity input keyboard handling */
+.quantity-input:focus-visible {
+  outline: 2px solid #667eea;
+  outline-offset: 0;
+  border-color: #667eea;
+  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+}
+
+/* Keyboard shortcut reference panel */
+.keyboard-shortcuts-panel {
+  background: #f9fafb;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  padding: 16px;
+  margin: 16px 0;
+  font-size: 12px;
+}
+
+.keyboard-shortcuts-panel h3 {
+  margin: 0 0 12px 0;
+  font-size: 14px;
+  font-weight: 600;
+  color: #1f2937;
+}
+
+.shortcuts-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 12px;
+}
+
+.shortcut-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px;
+  background: white;
+  border-radius: 4px;
+  border-left: 3px solid #667eea;
+}
+
+.shortcut-key {
+  background: #e5e7eb;
+  color: #1f2937;
+  padding: 4px 8px;
+  border-radius: 3px;
+  font-family: 'Courier New', monospace;
+  font-weight: 600;
+  font-size: 11px;
+  min-width: 50px;
+  text-align: center;
+  white-space: nowrap;
+}
+
+.shortcut-action {
+  color: #6b7280;
+  font-size: 12px;
+}
+
+/* Keyboard state indicators */
+.keyboard-state {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  background: #e0f2fe;
+  border-left: 3px solid #0284c7;
+  border-radius: 4px;
+  font-size: 12px;
+  color: #0c4a6e;
+  margin-bottom: 12px;
+}
+
+.keyboard-state.ready {
+  background: #dcfce7;
+  border-left-color: #16a34a;
+  color: #15803d;
+}
+
+.keyboard-state.processing {
+  background: #fef3c7;
+  border-left-color: #d97706;
+  color: #92400e;
+}
+
+.keyboard-state.error {
+  background: #fee2e2;
+  border-left-color: #dc2626;
+  color: #991b1b;
+}
+
+/* Submit button keyboard focus */
+.btn-submit:focus-visible {
+  outline: 2px solid white;
+  outline-offset: 2px;
+  box-shadow: 0 0 0 3px #667eea, inset 0 0 0 2px white;
+}
+
+.btn-submit:active {
+  transform: scale(0.98);
+}
+
+/* Clear button keyboard focus */
+.btn-clear:focus-visible {
+  outline: 2px solid #667eea;
+  outline-offset: 2px;
+  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+}
+
+/* Quantity button keyboard focus */
+.quantity-btn:focus-visible {
+  outline: 2px solid #667eea;
+  outline-offset: 1px;
+  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+}
+
+/* Remove button keyboard focus */
+.remove-btn:focus-visible {
+  outline: 2px solid #991b1b;
+  outline-offset: 1px;
+  box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.1);
+}
+
+/* Keyboard shortcut toast notification */
+.keyboard-toast {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  background: rgba(0, 0, 0, 0.85);
+  color: white;
+  padding: 12px 16px;
+  border-radius: 6px;
+  font-size: 13px;
+  font-weight: 500;
+  animation: slideInUp 0.3s ease-out;
+  z-index: 1000;
+}
+
+@keyframes slideInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Dark mode support */
+@media (prefers-color-scheme: dark) {
+  .keyboard-hint {
+    background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
+  }
+
+  .order-item-row:hover {
+    background-color: rgba(79, 70, 229, 0.15) !important;
+  }
+
+  .order-item-row.selected {
+    background-color: rgba(79, 70, 229, 0.25) !important;
+    box-shadow: inset 3px 0 0 #4f46e5;
+  }
+
+  .order-item-row.selected .product-name {
+    color: #818cf8;
+  }
+
+  .keyboard-shortcuts-panel {
+    background: #1f2937;
+    border-color: #374151;
+  }
+
+  .keyboard-shortcuts-panel h3 {
+    color: #f3f4f6;
+  }
+
+  .shortcut-item {
+    background: #111827;
+    border-left-color: #818cf8;
+  }
+
+  .shortcut-key {
+    background: #374151;
+    color: #f3f4f6;
+  }
+
+  .shortcut-action {
+    color: #d1d5db;
+  }
+
+  .keyboard-state {
+    background: #082f49;
+    border-left-color: #0284c7;
+    color: #7dd3fc;
+  }
+
+  .keyboard-state.ready {
+    background: #14532d;
+    border-left-color: #16a34a;
+    color: #86efac;
+  }
+
+  .keyboard-state.processing {
+    background: #543700;
+    border-left-color: #d97706;
+    color: #fcd34d;
+  }
+
+  .keyboard-state.error {
+    background: #7f1d1d;
+    border-left-color: #dc2626;
+    color: #fca5a5;
+  }
+}
+
+/* Mobile keyboard handling */
+@media (max-width: 768px) {
+  .keyboard-hint {
+    font-size: 12px;
+    padding: 10px 12px;
+    flex-wrap: wrap;
+  }
+
+  .shortcuts-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .keyboard-toast {
+    bottom: 10px;
+    right: 10px;
+    left: 10px;
+    text-align: center;
+  }
+
+  /* Make buttons larger for touch + keyboard */
+  .quantity-btn,
+  .remove-btn {
+    width: 40px;
+    height: 40px;
+  }
+
+  .quantity-input {
+    width: 60px;
+    height: 40px;
+    padding: 8px;
+  }
+}
+
+/* Accessibility: Ensure keyboard navigation is visible */
+:focus-visible {
+  outline: 2px solid #667eea;
+  outline-offset: 2px;
+}
+
+/* Print styles for keyboard reference */
+@media print {
+  .keyboard-hint,
+  .keyboard-shortcuts-panel,
+  .keyboard-state,
+  .keyboard-toast {
+    display: none;
+  }
+}
+
+/* Tab key visual indicator */
+.tab-indicator {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 3px;
+  height: 100%;
+  background: #667eea;
+  animation: pulse 2s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+}
+
+/* Keyboard shortcut overlay */
+.keyboard-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 999;
+  backdrop-filter: blur(2px);
+}
+
+.keyboard-overlay-content {
+  background: white;
+  border-radius: 12px;
+  padding: 24px;
+  max-width: 600px;
+  max-height: 80vh;
+  overflow-y: auto;
+  box-shadow: 0 20px 25px rgba(0, 0, 0, 0.15);
+}
+
+.keyboard-overlay-content h2 {
+  margin: 0 0 16px 0;
+  font-size: 20px;
+  font-weight: 700;
+}
+
+.keyboard-overlay-content .shortcuts-grid {
+  grid-template-columns: repeat(2, 1fr);
+}
+
+.keyboard-overlay-close {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  background: #e5e7eb;
+  border: none;
+  border-radius: 4px;
+  width: 32px;
+  height: 32px;
+  cursor: pointer;
+  font-size: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.keyboard-overlay-close:hover {
+  background: #d1d5db;
+}
+
+/* Dark mode overlay */
+@media (prefers-color-scheme: dark) {
+  .keyboard-overlay-content {
+    background: #1f2937;
+    color: #f3f4f6;
+  }
+
+  .keyboard-overlay-content h2 {
+    color: #f3f4f6;
+  }
+
+  .keyboard-overlay-close {
+    background: #374151;
+  }
+
+  .keyboard-overlay-close:hover {
+    background: #4b5563;
+  }
+}

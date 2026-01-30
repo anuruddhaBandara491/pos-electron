@@ -1,0 +1,19 @@
+/* Products Page Styles */
+
+.products-page {
+  padding: 20px;
+  background-color: #f5f5f5;
+  min-height: 100vh;
+}
+
+.products-page h1 {
+  font-size: 28px;
+  font-weight: 700;
+  color: #333;
+  margin-bottom: 20px;
+}
+
+.products-page p {
+  font-size: 16px;
+  color: #666;
+}

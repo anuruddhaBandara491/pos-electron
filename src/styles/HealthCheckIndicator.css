@@ -1,0 +1,347 @@
+/* Health Check Indicator Styles */
+
+.health-check-indicator {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  background: transparent;
+}
+
+/* Status Display */
+.health-status {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 10px;
+  border-radius: 20px;
+  font-size: 13px;
+  font-weight: 500;
+  transition: all 0.3s ease;
+  cursor: default;
+}
+
+/* Online Status - Green */
+.health-status.health-online {
+  background-color: rgba(34, 197, 94, 0.1);
+  color: #22c55e;
+  border: 1px solid rgba(34, 197, 94, 0.3);
+}
+
+.health-status.health-online .health-icon {
+  animation: none;
+}
+
+/* Offline Status - Red */
+.health-status.health-offline {
+  background-color: rgba(239, 68, 68, 0.1);
+  color: #ef4444;
+  border: 1px solid rgba(239, 68, 68, 0.3);
+}
+
+.health-status.health-offline .health-icon {
+  animation: pulse-red 2s infinite;
+}
+
+/* Checking Status - Yellow */
+.health-status.health-checking {
+  background-color: rgba(234, 179, 8, 0.1);
+  color: #eab308;
+  border: 1px solid rgba(234, 179, 8, 0.3);
+}
+
+.health-status.health-checking .health-icon {
+  animation: spin 1s linear infinite;
+}
+
+/* Icon Styling */
+.health-icon {
+  font-size: 16px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 16px;
+  height: 16px;
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes pulse-red {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+}
+
+/* Details Button */
+.health-details-btn {
+  background: none;
+  border: none;
+  color: #666;
+  cursor: pointer;
+  padding: 4px 8px;
+  font-size: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 4px;
+  transition: all 0.2s ease;
+  min-width: 32px;
+  min-height: 32px;
+}
+
+.health-details-btn:hover {
+  background-color: rgba(0, 0, 0, 0.05);
+  color: #333;
+}
+
+.health-details-btn:active {
+  background-color: rgba(0, 0, 0, 0.1);
+}
+
+/* Details Panel */
+.health-details-panel {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  margin-top: 8px;
+  background: white;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  min-width: 280px;
+  max-width: 320px;
+  z-index: 1000;
+  animation: slideDown 0.2s ease;
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Details Header */
+.details-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 16px;
+  border-bottom: 1px solid #eee;
+}
+
+.details-header h4 {
+  margin: 0;
+  font-size: 14px;
+  font-weight: 600;
+  color: #333;
+}
+
+.close-btn {
+  background: none;
+  border: none;
+  font-size: 18px;
+  color: #999;
+  cursor: pointer;
+  padding: 0;
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: color 0.2s ease;
+}
+
+.close-btn:hover {
+  color: #333;
+}
+
+/* Details Content */
+.details-content {
+  padding: 12px 16px;
+}
+
+.detail-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 0;
+  font-size: 12px;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.detail-row:last-of-type {
+  border-bottom: none;
+}
+
+.detail-label {
+  color: #666;
+  font-weight: 500;
+}
+
+.detail-value {
+  color: #333;
+  font-family: 'Courier New', monospace;
+  font-size: 11px;
+  text-align: right;
+  flex: 1;
+  margin-left: 12px;
+}
+
+.detail-value.health-online {
+  color: #22c55e;
+  font-weight: 600;
+}
+
+.detail-value.health-offline {
+  color: #ef4444;
+  font-weight: 600;
+}
+
+.detail-value.health-checking {
+  color: #eab308;
+  font-weight: 600;
+}
+
+.detail-warning {
+  color: #f97316;
+  font-weight: 600;
+}
+
+/* Details Actions */
+.details-actions {
+  display: flex;
+  gap: 8px;
+  padding: 12px 0 0 0;
+  margin-top: 8px;
+  border-top: 1px solid #eee;
+  justify-content: flex-end;
+}
+
+.check-now-btn {
+  background: #3b82f6;
+  color: white;
+  border: none;
+  padding: 6px 12px;
+  border-radius: 4px;
+  font-size: 12px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.check-now-btn:hover:not(:disabled) {
+  background: #2563eb;
+  box-shadow: 0 2px 8px rgba(59, 130, 246, 0.3);
+}
+
+.check-now-btn:active:not(:disabled) {
+  transform: translateY(1px);
+}
+
+.check-now-btn:disabled {
+  background: #cbd5e1;
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .health-check-indicator {
+    padding: 6px 8px;
+  }
+
+  .health-status {
+    font-size: 12px;
+    padding: 4px 8px;
+  }
+
+  .health-details-panel {
+    position: fixed;
+    top: auto;
+    right: 16px;
+    bottom: 16px;
+    left: 16px;
+    max-width: none;
+  }
+}
+
+/* Dark Mode Support */
+@media (prefers-color-scheme: dark) {
+  .health-status.health-online {
+    background-color: rgba(34, 197, 94, 0.2);
+    border-color: rgba(34, 197, 94, 0.4);
+  }
+
+  .health-status.health-offline {
+    background-color: rgba(239, 68, 68, 0.2);
+    border-color: rgba(239, 68, 68, 0.4);
+  }
+
+  .health-status.health-checking {
+    background-color: rgba(234, 179, 8, 0.2);
+    border-color: rgba(234, 179, 8, 0.4);
+  }
+
+  .health-details-btn {
+    color: #999;
+  }
+
+  .health-details-btn:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+    color: #ccc;
+  }
+
+  .health-details-panel {
+    background: #2d2d2d;
+    border-color: #444;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+  }
+
+  .details-header {
+    border-bottom-color: #444;
+  }
+
+  .details-header h4 {
+    color: #e0e0e0;
+  }
+
+  .detail-row {
+    border-bottom-color: #3a3a3a;
+  }
+
+  .detail-label {
+    color: #999;
+  }
+
+  .detail-value {
+    color: #ccc;
+  }
+
+  .details-actions {
+    border-top-color: #444;
+  }
+
+  .check-now-btn {
+    background: #3b82f6;
+  }
+
+  .check-now-btn:hover:not(:disabled) {
+    background: #2563eb;
+  }
+}

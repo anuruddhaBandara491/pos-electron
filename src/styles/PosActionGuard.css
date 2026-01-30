@@ -1,0 +1,111 @@
+/* POS Action Guard Styles */
+
+.pos-action-guard {
+  position: relative;
+  display: contents;
+}
+
+.guard-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 8px;
+  z-index: 100;
+  pointer-events: auto;
+  animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.guard-warning {
+  background: white;
+  color: #dc2626;
+  padding: 16px 24px;
+  border-radius: 6px;
+  font-weight: 500;
+  text-align: center;
+  font-size: 14px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  max-width: 300px;
+  animation: slideUp 0.3s ease;
+}
+
+@keyframes slideUp {
+  from {
+    transform: translateY(20px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.guard-content {
+  position: relative;
+  display: contents;
+}
+
+.guard-content.disabled {
+  pointer-events: none;
+  opacity: 0.5;
+}
+
+.guard-content.disabled button,
+.guard-content.disabled input,
+.guard-content.disabled textarea,
+.guard-content.disabled select {
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+/* Disabled State for Button Groups */
+.guard-content.disabled .pos-button-group {
+  opacity: 0.6;
+}
+
+.guard-content.disabled .pos-button-group button {
+  cursor: not-allowed;
+  background-color: #cbd5e1;
+  border-color: #cbd5e1;
+  color: #64748b;
+}
+
+.guard-content.disabled .pos-button-group button:hover {
+  background-color: #cbd5e1;
+  border-color: #cbd5e1;
+}
+
+/* Form fields */
+.guard-content.disabled input:disabled,
+.guard-content.disabled textarea:disabled,
+.guard-content.disabled select:disabled {
+  background-color: #f1f5f9;
+  color: #94a3b8;
+  cursor: not-allowed;
+}
+
+/* Dark Mode Support */
+@media (prefers-color-scheme: dark) {
+  .guard-overlay {
+    background: rgba(0, 0, 0, 0.7);
+  }
+
+  .guard-warning {
+    background: #2d2d2d;
+    color: #f87171;
+  }
+}

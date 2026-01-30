@@ -1,0 +1,113 @@
+{
+  "name": "pos-system-desktop",
+  "version": "1.0.0",
+  "description": "Production-ready POS System Desktop Application",
+  "main": "electron/main.js",
+  "homepage": "./",
+  "author": "POS Development Team",
+  "license": "MIT",
+  "scripts": {
+    "start": "craco start",
+    "electron": "cross-env NODE_ENV=development electron .",
+    "dev": "concurrently \"npm start\" \"npm run electron\"",
+    "build": "npm run build:react && npm run build:electron",
+    "build:react": "craco build",
+    "build:electron": "electron-builder"
+  },
+  "dependencies": {
+    "axios": "^1.6.0",
+    "electron-log": "^4.4.8",
+    "electron-store": "^8.1.0",
+    "keytar": "^7.9.0",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "react-router-dom": "^6.8.0"
+  },
+  "devDependencies": {
+    "@craco/craco": "^7.1.0",
+    "@testing-library/jest-dom": "^5.16.5",
+    "@testing-library/react": "^13.4.0",
+    "@testing-library/user-event": "^13.5.0",
+    "concurrently": "^9.2.1",
+    "cross-env": "^7.0.3",
+    "electron": "^27.0.0",
+    "electron-builder": "^24.6.4",
+    "electron-is-dev": "^3.0.1",
+    "react-scripts": "5.0.1",
+    "web-vitals": "^2.1.4"
+  },
+  "eslintConfig": {
+    "extends": [
+      "react-app"
+    ]
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  },
+  "build": {
+    "appId": "com.pos-system.app",
+    "productName": "POS System",
+    "files": [
+      "public/**/*",
+      "src/main.js",
+      "src/preload.js",
+      "node_modules/**/*"
+    ],
+    "directories": {
+      "buildResources": "public",
+      "output": "dist"
+    },
+    "win": {
+      "target": [
+        {
+          "target": "nsis",
+          "arch": [
+            "x64",
+            "ia32"
+          ]
+        },
+        {
+          "target": "portable",
+          "arch": [
+            "x64"
+          ]
+        }
+      ],
+      "certificateFile": null,
+      "certificatePassword": null,
+      "signingHashAlgorithms": [
+        "sha256"
+      ]
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true,
+      "shortcutName": "POS System"
+    },
+    "mac": {
+      "target": [
+        "dmg",
+        "zip"
+      ],
+      "category": "public.app-category.business"
+    },
+    "linux": {
+      "target": [
+        "AppImage",
+        "deb"
+      ],
+      "category": "Business"
+    }
+  }
+}

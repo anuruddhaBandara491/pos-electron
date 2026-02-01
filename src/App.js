@@ -22,9 +22,7 @@ import HealthCheckIndicator from './components/HealthCheckIndicator';
 import OfflineModeBanner from './components/OfflineModeBanner';
 import { VersionUpdateNotification, CriticalVersionBlock } from './components/VersionNotifier';
 import AuthContext from './context/AuthContext';
-
-// Utils
-const RoleManager = require('./utils/RoleManager');
+import { OrderProvider } from './context/OrderContext'; // Add this import
 
 const log = {
   info: (...args) => {
@@ -45,6 +43,7 @@ const log = {
     }
   },
 };
+
 /**
  * Main App Component
  * Handles authentication state, permission-based routing, and health checks
@@ -71,10 +70,15 @@ function App() {
   useEffect(() => {
     const initializeApp = async () => {
       try {
-        // Initialize health check service first
         log.info('Initializing health check service...');
         const isHealthy = await healthCheckService.initialize();
         setBackendHealthy(isHealthy);
+
+        if (!isHealthy) {
+          log.warn('Backend is offline. Some features may be limited.');
+          // Optionally, you can set an error state to display a message to the user
+          setError('Backend is currently offline. Please check your connection.');
+        }
 
         // Subscribe to health status changes
         const unsubscribeHealth = healthCheckService.onStatusChange((healthy) => {
@@ -104,6 +108,7 @@ function App() {
         return unsubscribeHealth;
       } catch (err) {
         log.warn('App initialization error:', err.message);
+        setError('Failed to initialize app. Please try again later.');
         setIsAuthenticated(false);
         setCurrentUser(null);
         setUserRoles([]);
@@ -231,7 +236,7 @@ function App() {
         <OfflineModeBanner healthCheckService={healthCheckService} />
         
         {isAuthenticated ? (
-          <>
+          <Router>
             {/* Header with Navigation and Health Indicator */}
             <header className="app-header">
               <Navigation user={currentUser} onLogout={handleLogout} />
@@ -239,15 +244,8 @@ function App() {
             </header>
             
             <main className="app-main">
-              <Router>
+              <OrderProvider> {/* Add OrderProvider wrapper */}
                 <Routes>
-                  {/* 
-                    Permission-Based Routes
-                    - view_reports, manage_settings: Manager/Admin
-                    - view_orders, create_order, etc: Based on permissions
-                    - All users: Can access based on their permissions
-                  */}
-                  
                   {/* Dashboard - view_reports or manage_settings permission */}
                   <Route 
                     path="/dashboard" 
@@ -327,11 +325,7 @@ function App() {
                     }
                   />
 
-                  {/* 
-                    Home Route - Auto-redirect based on role
-                    Admin/Manager → /dashboard
-                    Cashier/Operator → /pos (Orders)
-                  */}
+                  {/* Home Route - Auto-redirect based on role */}
                   <Route 
                     path="/" 
                     element={<Navigate to={getHomeRoute()} replace />} 
@@ -343,9 +337,9 @@ function App() {
                     element={<Navigate to={getHomeRoute()} replace />} 
                   />
                 </Routes>
-              </Router>
+              </OrderProvider> {/* Close OrderProvider wrapper */}
             </main>
-          </>
+          </Router>
         ) : (
           <LoginPage onLogin={handleLogin} error={error} />
         )}

@@ -108,21 +108,27 @@ class HealthCheckService {
    */
   async _callHealthEndpoint() {
     try {
-      // Use IPC to call the backend via main process
-      if (window.pos && window.pos.health) {
-        const response = await Promise.race([
-          window.pos.health.check(),
-          this._createTimeout(this.timeoutDuration)
-        ]);
+      log.debug('Calling backend /health endpoint' + (window.pos ? ' via IPC' : ' (IPC not available)'));
+      
+      // Check if IPC bridge is available
+      if (!window.pos) {
+        throw new Error('IPC bridge not initialized. Please restart the application.');
+      }
 
-        if (!response.ok) {
-          throw new Error(`Health check returned status ${response.status || 'unknown'}`);
-        }
-
-        return response;
-      } else {
+      if (!window.pos.health) {
         throw new Error('Health check IPC handler not available');
       }
+
+      const response = await Promise.race([
+        window.pos.health.check(),
+        this._createTimeout(this.timeoutDuration)
+      ]);
+
+      if (!response.ok) {
+        throw new Error(`Health check returned status ${response.status || 'unknown'}`);
+      }
+
+      return response;
     } catch (err) {
       throw new Error(`Health endpoint call failed: ${err.message}`);
     }

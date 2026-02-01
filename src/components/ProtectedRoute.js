@@ -1,7 +1,7 @@
 import React from 'react';
 import { Navigate } from 'react-router-dom';
 import log from '../utils/logger';
-const RoleManager = require('../utils/RoleManager');
+import RoleManager from '../utils/RoleManager';
 
 /**
  * Protected Route Guard Component

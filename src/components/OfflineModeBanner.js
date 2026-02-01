@@ -1,4 +1,5 @@
-import React, { useState, useEffect } from 'react';
+import React, { useContext, useState, useEffect } from 'react';
+import AuthContext from '../context/AuthContext';
 import log from '../utils/logger';
 import '../styles/OfflineModeBanner.css';
 
@@ -8,20 +9,19 @@ import '../styles/OfflineModeBanner.css';
  * Alerts users that POS operations may be blocked or limited
  */
 function OfflineModeBanner({ healthCheckService }) {
-  const [isOffline, setIsOffline] = useState(false);
+  const authContext = useContext(AuthContext);
   const [showRetryButton, setShowRetryButton] = useState(false);
   const [isRetrying, setIsRetrying] = useState(false);
+
+  // Get backend health status from AuthContext (single source of truth)
+  const isOffline = authContext && !authContext.backendHealthy;
 
   useEffect(() => {
     if (!healthCheckService) return;
 
-    // Check initial status
-    const initialStatus = healthCheckService.getStatus();
-    setIsOffline(!initialStatus.isHealthy);
-
-    // Subscribe to status changes
+    // Subscribe to status changes for retry button behavior
     const unsubscribe = healthCheckService.onStatusChange((isHealthy) => {
-      setIsOffline(!isHealthy);
+      log.debug(`[OfflineModeBanner] Health status changed to: ${isHealthy ? 'ONLINE' : 'OFFLINE'}`);
       
       // Show retry button after a few seconds of offline
       if (!isHealthy) {
@@ -31,6 +31,7 @@ function OfflineModeBanner({ healthCheckService }) {
       } else {
         setShowRetryButton(false);
         setIsRetrying(false);
+        log.info('[OfflineModeBanner] Backend recovered, hiding banner');
       }
     });
 

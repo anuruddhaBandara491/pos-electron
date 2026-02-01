@@ -74,16 +74,31 @@ function App() {
         const isHealthy = await healthCheckService.initialize();
         setBackendHealthy(isHealthy);
 
-        if (!isHealthy) {
-          log.warn('Backend is offline. Some features may be limited.');
-          // Optionally, you can set an error state to display a message to the user
-          setError('Backend is currently offline. Please check your connection.');
+        // Don't show error immediately on initial load - wait for status to stabilize
+        // The status change listener will handle showing errors if backend stays offline
+        if (isHealthy) {
+          setError(null);
+          log.info('Backend is online and ready');
+        } else {
+          // Backend appears offline, but don't show error yet - let periodic checks confirm
+          log.warn('Initial health check failed, waiting for periodic checks...');
         }
 
         // Subscribe to health status changes
         const unsubscribeHealth = healthCheckService.onStatusChange((healthy) => {
           setBackendHealthy(healthy);
-          log.info(`Backend health status changed: ${healthy ? 'ONLINE' : 'OFFLINE'}`);
+           log.debug(`[App] Health status listener called: ${healthy ? 'ONLINE' : 'OFFLINE'}`);
+          
+          // Clear error when health recovers, set error only when unhealthy
+          if (healthy) {
+            setError(null);
+            log.info('Backend health recovered: OFFLINE → ONLINE');
+             log.debug('[App] Error state cleared to null');
+          } else {
+            setError('Backend is currently offline. Please check your connection.');
+            log.warn('Backend health degraded: ONLINE → OFFLINE');
+             log.debug('[App] Error state set to offline message');
+          }
         });
 
         // Check authentication

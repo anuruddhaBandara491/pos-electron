@@ -28,15 +28,31 @@ class HealthCheckService {
 
   /**
    * Initialize health check service
-   * Perform initial check and start periodic checks
+   * Perform initial check with retries and start periodic checks
    * @returns {Promise<boolean>} Whether backend is initially healthy
    */
   async initialize() {
     try {
       log.info('Initializing health check service');
       
-      // Perform initial health check
-      const isHealthy = await this.performHealthCheck();
+      // Perform initial health check with retries (give backend time to be ready)
+      let isHealthy = false;
+      const maxInitialRetries = 3;
+      
+      for (let attempt = 1; attempt <= maxInitialRetries; attempt++) {
+        log.debug(`Initial health check attempt ${attempt}/${maxInitialRetries}`);
+        isHealthy = await this.performHealthCheck();
+        
+        if (isHealthy) {
+          log.info('Initial health check succeeded');
+          break;
+        }
+        
+        // Wait a bit before retrying (except on last attempt)
+        if (attempt < maxInitialRetries) {
+          await new Promise(resolve => setTimeout(resolve, 1000));
+        }
+      }
       
       // Start periodic health checks
       this.startPeriodicChecks();
@@ -200,7 +216,11 @@ class HealthCheckService {
     // Only notify if status changed
     if (previousStatus !== healthy) {
       log.info(`Backend status changed: ${previousStatus ? 'ONLINE' : 'OFFLINE'} → ${healthy ? 'ONLINE' : 'OFFLINE'}`);
+       log.debug(`[HealthCheckService] Notifying ${this.statusChangeListeners.length} listeners of status change`);
       this.notifyStatusChange(healthy);
+     } else {
+       // Even if status didn't change, log that setHealth was called
+       log.debug(`[HealthCheckService] setHealth called with same status: ${healthy ? 'ONLINE' : 'OFFLINE'}`);
     }
   }
 

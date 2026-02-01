@@ -1,4 +1,4 @@
-import React, { createContext } from 'react';
+import { createContext } from 'react';
 
 /**
  * Authentication Context
@@ -17,6 +17,8 @@ const AuthContext = createContext({
   currentUser: null,
   userRoles: [],
   userPermissions: [],
+ backendHealthy: true,
+ healthCheckService: null,
   handleLogin: async () => {},
   handleLogout: async () => {}
 });

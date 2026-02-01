@@ -145,6 +145,18 @@ class RoleManager {
     '/users': ['view_users']
   };
 
+  static normalizeRoleValue(role) {
+    if (!role) return '';
+    if (typeof role === 'string') return role.toLowerCase();
+    return (role.name || role.role || role.slug || '').toLowerCase();
+  }
+
+  static normalizePermissionValue(permission) {
+    if (!permission) return '';
+    if (typeof permission === 'string') return permission;
+    return permission.name || permission.slug || permission.permission || '';
+  }
+
   /**
    * Check if user has a specific permission
    * Supports both direct permission array and role-based permission lookup
@@ -157,7 +169,10 @@ class RoleManager {
 
     // If user has permissions array directly, check it
     if (Array.isArray(user.permissions)) {
-      return user.permissions.includes(permission);
+      const normalized = user.permissions
+        .map((perm) => this.normalizePermissionValue(perm))
+        .filter(Boolean);
+      return normalized.includes(permission);
     }
 
     // Otherwise, derive permissions from user's role(s)
@@ -264,8 +279,8 @@ class RoleManager {
     if (!user) return false;
 
     const userRoles = Array.isArray(user.roles) 
-      ? user.roles.map(r => r.toLowerCase())
-      : [user.role?.toLowerCase() || user.roles?.toLowerCase() || ''].filter(Boolean);
+      ? user.roles.map(r => this.normalizeRoleValue(r)).filter(Boolean)
+      : [this.normalizeRoleValue(user.role || user.roles)].filter(Boolean);
 
     const rolesArray = Array.isArray(requiredRoles) 
       ? requiredRoles.map(r => r.toLowerCase())
@@ -323,7 +338,9 @@ class RoleManager {
 
     // If user has permissions array, return it
     if (Array.isArray(user.permissions)) {
-      return user.permissions;
+      return user.permissions
+        .map((perm) => this.normalizePermissionValue(perm))
+        .filter(Boolean);
     }
 
     // Derive from roles
@@ -501,7 +518,7 @@ class RoleManager {
 
     const normalized = { ...user };
 
-    // Convert role (string) to roles (array) if needed
+    // Convert role (string/object) to roles (array) if needed
     if (user.role && !user.roles) {
       normalized.roles = [user.role];
     } else if (typeof user.roles === 'string') {
@@ -510,9 +527,16 @@ class RoleManager {
       normalized.roles = [];
     }
 
-    // Ensure all roles are lowercase
     if (Array.isArray(normalized.roles)) {
-      normalized.roles = normalized.roles.map(r => r.toLowerCase());
+      normalized.roles = normalized.roles
+        .map((role) => this.normalizeRoleValue(role))
+        .filter(Boolean);
+    }
+
+    if (Array.isArray(normalized.permissions)) {
+      normalized.permissions = normalized.permissions
+        .map((perm) => this.normalizePermissionValue(perm))
+        .filter(Boolean);
     }
 
     return normalized;

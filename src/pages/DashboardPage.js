@@ -18,19 +18,41 @@ export default function DashboardPage() {
     const loadDashboardData = async () => {
       try {
         setIsLoading(true);
-        // Load dashboard statistics
-        const salesReport = await window.pos.reports.sales({ limit: 1 });
-        const ordersData = await window.pos.orders.getAll({ limit: 5 });
+        
+        // Check if reports and orders API are available
+        if (window.pos?.reports?.sales) {
+          // Load dashboard statistics if API is available
+          const salesReport = await window.pos.reports.sales({ limit: 1 });
+          const ordersData = await window.pos.orders.getAll({ limit: 5 });
 
+          setStats({
+            totalSales: salesReport?.total_amount || 0,
+            totalOrders: ordersData?.total || 0,
+            totalProducts: 0,
+            cashBalance: 0
+          });
+          setRecentOrders(ordersData?.data || []);
+        } else {
+          // Fallback: Show placeholder data when API isn't available
+          console.log('Dashboard API not yet implemented - showing placeholder data');
+          setStats({
+            totalSales: 0,
+            totalOrders: 0,
+            totalProducts: 0,
+            cashBalance: 0
+          });
+          setRecentOrders([]);
+        }
+      } catch (error) {
+        console.error('Error loading dashboard:', error);
+        // Set default values on error
         setStats({
-          totalSales: salesReport?.total_amount || 0,
-          totalOrders: ordersData?.total || 0,
+          totalSales: 0,
+          totalOrders: 0,
           totalProducts: 0,
           cashBalance: 0
         });
-        setRecentOrders(ordersData?.data || []);
-      } catch (error) {
-        console.error('Error loading dashboard:', error);
+        setRecentOrders([]);
       } finally {
         setIsLoading(false);
       }

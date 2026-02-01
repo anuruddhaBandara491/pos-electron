@@ -46,6 +46,36 @@ ipcMain.handle('auth:getCurrentUser', async () => {
   }
 });
 
+// Health check handler
+ipcMain.handle('health:check', async () => {
+  try {
+    const axios = require('axios');
+    const apiUrl = process.env.REACT_APP_API_URL || 'http://127.0.0.1:8000/api/v1';
+    
+    console.log('[IPC] Health check - calling:', `${apiUrl}/health`);
+    
+    const response = await axios.get(`${apiUrl}/health`, {
+      timeout: 5000,
+      validateStatus: (status) => status < 500, // Accept any status < 500
+    });
+    
+    console.log('[IPC] Health check response:', response.status, response.data);
+    
+    return {
+      ok: response.status === 200,
+      status: response.status,
+      data: response.data,
+    };
+  } catch (error) {
+    console.log('[IPC] Health check failed:', error.message);
+    return {
+      ok: false,
+      status: error.response?.status || 0,
+      error: error.message,
+    };
+  }
+});
+
 /**
  * ================================
  * APP LIFECYCLE

@@ -409,16 +409,59 @@ class AuthService {
   _storeUserData(userData) {
     if (!userData) return;
 
+    // Debug: Log raw user data from backend
+    log.debug(`[AuthService] Raw user data from backend:`, JSON.stringify({
+      email: userData.email,
+      roles: userData.roles,
+      role: userData.role,
+      permissions: userData.permissions
+    }));
+
     // Normalize roles to consistent format
     const normalized = RoleManager.normalizeRoles(userData);
     this.currentUser = normalized;
     this.userRoles = this.getUserRoles();
     this.userPermissions = this.getUserPermissions();
 
+    // Debug: Log normalized data
+    log.debug(`[AuthService] After normalization:`, JSON.stringify({
+      currentUserRoles: this.currentUser.roles,
+      userRoles: this.userRoles,
+      permissions: this.userPermissions
+    }));
+
     log.info(
       `User ${userData.email} authenticated with roles: ${this.userRoles.join(', ')} and ${this.userPermissions.length} permissions`
     );
   }
+
+    /**
+     * Infer user role from email when backend doesn't provide it
+     * This is a FALLBACK - backend should send roles properly
+     * @param {Object} userData - User data without roles
+     * @returns {Object} User data with inferred role
+     */
+    _inferRoleFromEmail(userData) {
+      if (!userData || !userData.email) return userData;
+
+      const email = userData.email.toLowerCase();
+      const updatedUser = { ...userData };
+
+      // Check email patterns
+      if (email.includes('admin')) {
+        updatedUser.role = 'admin';
+      } else if (email.includes('manager')) {
+        updatedUser.role = 'manager';
+      } else if (email.includes('cashier')) {
+        updatedUser.role = 'cashier';
+      } else {
+        // Default to cashier for unknown users
+        updatedUser.role = 'cashier';
+      }
+
+      log.warn(`[FALLBACK] Inferred role '${updatedUser.role}' for ${email}`);
+      return updatedUser;
+    }
 
   /**
    * Clear all user data

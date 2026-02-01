@@ -15,16 +15,23 @@ import RoleManager from '../utils/RoleManager';
  * - view_orders: Orders/POS (all roles have this)
  */
 export default function Navigation({ user, onLogout }) {
-  const { isAuthenticated, currentUser } = useContext(AuthContext);
+  const { isAuthenticated, currentUser, userRoles, userPermissions } = useContext(AuthContext);
+
+  // Create a user object with roles and permissions for RoleManager
+  const userWithPermissions = {
+    ...currentUser,
+    roles: userRoles || currentUser?.roles || [],
+    permissions: userPermissions || currentUser?.permissions || []
+  };
 
   // Check if user has a specific permission
   const hasPermission = (permission) => {
-    return RoleManager.hasPermission(currentUser, permission);
+    return RoleManager.hasPermission(userWithPermissions, permission);
   };
 
   // Check if user has any of the specified permissions
   const hasAnyPermission = (permissions) => {
-    return RoleManager.hasAnyPermission(currentUser, permissions);
+    return RoleManager.hasAnyPermission(userWithPermissions, permissions);
   };
 
   return (
@@ -76,7 +83,7 @@ export default function Navigation({ user, onLogout }) {
             <div className="user-details">
               <span className="user-name">{currentUser?.name || currentUser?.email}</span>
               <span className="user-roles">
-                {currentUser?.roles?.length > 0 ? currentUser.roles.join(', ') : 'User'}
+                {userRoles?.length > 0 ? userRoles.join(', ') : 'User'}
               </span>
             </div>
             <button className="logout-button" onClick={onLogout}>

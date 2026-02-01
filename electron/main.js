@@ -63,11 +63,15 @@ ipcMain.handle('auth:login', async (_event, credentials) => {
     });
 
     console.log('[IPC] Login successful');
+    console.log('[IPC] Login response data:', JSON.stringify(response.data, null, 2));
 
     const { user, token } = extractAuthPayload(response.data);
     if (!user) {
       throw new Error('Login succeeded but user data is missing');
     }
+
+    console.log('[IPC] Extracted user:', JSON.stringify(user, null, 2));
+    console.log('[IPC] User roles:', user.roles, 'User role:', user.role);
 
     if (token) {
       authToken = token;

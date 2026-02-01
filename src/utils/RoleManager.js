@@ -167,18 +167,22 @@ class RoleManager {
   static hasPermission(user, permission) {
     if (!user) return false;
 
-    // If user has permissions array directly, check it
-    if (Array.isArray(user.permissions)) {
+    // Prioritize backend permissions if provided
+    if (Array.isArray(user.permissions) && user.permissions.length > 0) {
       const normalized = user.permissions
         .map((perm) => this.normalizePermissionValue(perm))
         .filter(Boolean);
-      return normalized.includes(permission);
+      
+      // If we have valid permissions, check them directly
+      if (normalized.length > 0) {
+        return normalized.includes(permission);
+      }
     }
 
-    // Otherwise, derive permissions from user's role(s)
+    // Fallback: derive permissions from user's role(s)
     const userRoles = Array.isArray(user.roles) 
-      ? user.roles.map(r => r.toLowerCase())
-      : [user.role?.toLowerCase() || ''].filter(Boolean);
+      ? user.roles.map(r => this.normalizeRoleValue(r))
+      : [this.normalizeRoleValue(user.role) || ''].filter(Boolean);
 
     // Collect all permissions for user's roles
     const userPermissions = new Set();
@@ -336,17 +340,22 @@ class RoleManager {
   static getUserPermissions(user) {
     if (!user) return [];
 
-    // If user has permissions array, return it
-    if (Array.isArray(user.permissions)) {
-      return user.permissions
+    // Prioritize backend permissions if provided
+    if (Array.isArray(user.permissions) && user.permissions.length > 0) {
+      const normalized = user.permissions
         .map((perm) => this.normalizePermissionValue(perm))
         .filter(Boolean);
+      
+      // If we got valid permissions, return them
+      if (normalized.length > 0) {
+        return normalized;
+      }
     }
 
-    // Derive from roles
+    // Fallback: derive permissions from roles
     const userRoles = Array.isArray(user.roles) 
-      ? user.roles.map(r => r.toLowerCase())
-      : [user.role?.toLowerCase() || ''].filter(Boolean);
+      ? user.roles.map(r => this.normalizeRoleValue(r))
+      : [this.normalizeRoleValue(user.role) || ''].filter(Boolean);
 
     const permissions = new Set();
     userRoles.forEach(role => {

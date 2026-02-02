@@ -173,6 +173,137 @@ ipcMain.handle('health:check', async () => {
   }
 });
 
+// Products: Get All
+ipcMain.handle('products:getAll', async (_event, params) => {
+  try {
+    if (!authToken) {
+      throw new Error('Not authenticated');
+    }
+
+    const response = await axios.get(`${apiUrl}/products`, {
+      params: params || {},
+      timeout: 10000,
+      headers: {
+        Authorization: `Bearer ${authToken}`
+      }
+    });
+
+    console.log('[IPC] Products response:', JSON.stringify(response.data, null, 2));
+    return response.data;
+  } catch (error) {
+    console.error('[IPC] Get products failed:', error.message);
+    console.error('[IPC] Error response status:', error.response?.status);
+    console.error('[IPC] Error response data:', JSON.stringify(error.response?.data, null, 2));
+    console.error('[IPC] Full error:', error);
+    throw new Error(error.response?.data?.message || 'Failed to fetch products');
+  }
+});
+
+// Products: Get By ID
+ipcMain.handle('products:getById', async (_event, id) => {
+  try {
+    if (!authToken) {
+      throw new Error('Not authenticated');
+    }
+
+    const response = await axios.get(`${apiUrl}/products/${id}`, {
+      timeout: 10000,
+      headers: {
+        Authorization: `Bearer ${authToken}`
+      }
+    });
+
+    return response.data;
+  } catch (error) {
+    console.error('[IPC] Get product failed:', error.message);
+    throw new Error(error.response?.data?.message || 'Failed to fetch product');
+  }
+});
+
+// Products: Create
+ipcMain.handle('products:create', async (_event, product) => {
+  try {
+    if (!authToken) {
+      throw new Error('Not authenticated');
+    }
+
+    const response = await axios.post(`${apiUrl}/products`, product, {
+      timeout: 10000,
+      headers: {
+        Authorization: `Bearer ${authToken}`
+      }
+    });
+
+    return response.data;
+  } catch (error) {
+    console.error('[IPC] Create product failed:', error.message);
+    throw new Error(error.response?.data?.message || 'Failed to create product');
+  }
+});
+
+// Products: Update
+ipcMain.handle('products:update', async (_event, id, product) => {
+  try {
+    if (!authToken) {
+      throw new Error('Not authenticated');
+    }
+
+    const response = await axios.put(`${apiUrl}/products/${id}`, product, {
+      timeout: 10000,
+      headers: {
+        Authorization: `Bearer ${authToken}`
+      }
+    });
+
+    return response.data;
+  } catch (error) {
+    console.error('[IPC] Update product failed:', error.message);
+    throw new Error(error.response?.data?.message || 'Failed to update product');
+  }
+});
+
+// Products: Delete
+ipcMain.handle('products:delete', async (_event, id) => {
+  try {
+    if (!authToken) {
+      throw new Error('Not authenticated');
+    }
+
+    const response = await axios.delete(`${apiUrl}/products/${id}`, {
+      timeout: 10000,
+      headers: {
+        Authorization: `Bearer ${authToken}`
+      }
+    });
+
+    return response.data;
+  } catch (error) {
+    console.error('[IPC] Delete product failed:', error.message);
+    throw new Error(error.response?.data?.message || 'Failed to delete product');
+  }
+});
+
+// Products: Toggle Status
+ipcMain.handle('products:toggleStatus', async (_event, id) => {
+  try {
+    if (!authToken) {
+      throw new Error('Not authenticated');
+    }
+
+    const response = await axios.patch(`${apiUrl}/products/${id}/toggle-status`, {}, {
+      timeout: 10000,
+      headers: {
+        Authorization: `Bearer ${authToken}`
+      }
+    });
+
+    return response.data;
+  } catch (error) {
+    console.error('[IPC] Toggle product status failed:', error.message);
+    throw new Error(error.response?.data?.message || 'Failed to toggle product status');
+  }
+});
+
 /**
  * ================================
  * APP LIFECYCLE

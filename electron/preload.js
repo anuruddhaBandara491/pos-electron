@@ -46,6 +46,18 @@ const secureApi = {
   },
 
   /* ==========
+     PRODUCTS APIs
+     ========== */
+  products: {
+    getAll: (params) => ipcRenderer.invoke('products:getAll', params),
+    getById: (id) => ipcRenderer.invoke('products:getById', id),
+    create: (product) => ipcRenderer.invoke('products:create', product),
+    update: (id, product) => ipcRenderer.invoke('products:update', id, product),
+    delete: (id) => ipcRenderer.invoke('products:delete', id),
+    toggleStatus: (id) => ipcRenderer.invoke('products:toggleStatus', id),
+  },
+
+  /* ==========
      APP APIs
      ========== */
   app: {

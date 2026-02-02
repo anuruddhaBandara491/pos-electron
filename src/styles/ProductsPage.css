@@ -5,6 +5,8 @@
   background-color: #f5f5f5;
   min-height: 100vh;
   position: relative;
+  max-width: 1400px;
+  margin: 0 auto;
 }
 
 /* Error Banner */
@@ -107,6 +109,99 @@
   margin: 0;
 }
 
+/* Search and Filters Section */
+.filters-section {
+  background: white;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  margin-bottom: 20px;
+}
+
+.search-box {
+  margin-bottom: 15px;
+}
+
+.search-input {
+  width: 100%;
+  padding: 12px 16px;
+  font-size: 15px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  transition: border-color 0.2s;
+}
+
+.search-input:focus {
+  outline: none;
+  border-color: #007bff;
+  box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.1);
+}
+
+.filters-row {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.filter-select {
+  padding: 10px 12px;
+  font-size: 14px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  background-color: white;
+  cursor: pointer;
+  transition: border-color 0.2s;
+  min-width: 150px;
+}
+
+.filter-select.sort-order {
+  min-width: 120px;
+}
+
+.filter-select:focus {
+  outline: none;
+  border-color: #007bff;
+}
+
+.checkbox-filter {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 10px 12px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  background-color: white;
+  cursor: pointer;
+  user-select: none;
+}
+
+.checkbox-filter input[type="checkbox"] {
+  cursor: pointer;
+  width: 16px;
+  height: 16px;
+}
+
+.checkbox-filter span {
+  font-size: 14px;
+  color: #333;
+}
+
+.btn-clear-filters {
+  padding: 10px 16px;
+  background-color: #6c757d;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: background-color 0.2s;
+}
+
+.btn-clear-filters:hover {
+  background-color: #5a6268;
+}
+
 .loading {
   text-align: center;
   padding: 40px;
@@ -173,9 +268,56 @@
   border-bottom: 2px solid #dee2e6;
 }
 
+/* Column Width Distribution */
+.products-table th:nth-child(1),
+.products-table td:nth-child(1) {
+  width: 140px; /* SKU - Fixed width */
+}
+
+.products-table th:nth-child(2),
+.products-table td:nth-child(2) {
+  width: auto; /* Name - Takes remaining space */
+  min-width: 200px;
+}
+
+.products-table th:nth-child(3),
+.products-table td:nth-child(3) {
+  width: 100px; /* Price - Fixed width */
+}
+
+.products-table th:nth-child(4),
+.products-table td:nth-child(4) {
+  width: 80px; /* Stock - Fixed width */
+  text-align: center;
+}
+
+.products-table th:nth-child(5),
+.products-table td:nth-child(5) {
+  width: 100px; /* Status - Fixed width */
+  text-align: center;
+}
+
+.products-table th:nth-child(6),
+.products-table td:nth-child(6) {
+  width: 180px; /* Actions - Fixed width */
+}
+
 .products-table td {
   padding: 12px 16px;
   border-bottom: 1px solid #dee2e6;
+}
+
+/* Allow Name column to wrap if needed */
+.products-table td:nth-child(2) {
+  white-space: normal;
+  word-wrap: break-word;
+}
+
+/* Keep other columns single line */
+.products-table td:not(:nth-child(2)) {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .products-table tbody tr:hover {

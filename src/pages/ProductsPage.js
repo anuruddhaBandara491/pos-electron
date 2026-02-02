@@ -13,13 +13,24 @@ export default function ProductsPage() {
     current_page: 1,
     last_page: 1
   });
+  
+  // Search and Filter State
+  const [searchTerm, setSearchTerm] = useState('');
+  const [filters, setFilters] = useState({
+    is_active: '',
+    category: '',
+    low_stock: false
+  });
+  const [sortBy, setSortBy] = useState('created_at');
+  const [sortOrder, setSortOrder] = useState('desc');
+  
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
   const [showModal, setShowModal] = useState(false);
   const [editingProduct, setEditingProduct] = useState(null);
   const [toast, setToast] = useState(null);
   const [formData, setFormData] = useState({
-    branch_id: 1,
+    branch_id: currentUser?.branch_id || 1,
     sku: '',
     name: '',
     description: '',
@@ -50,6 +61,15 @@ export default function ProductsPage() {
     loadProducts();
   }, []);
 
+  // Reload when search or filters change
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      loadProducts(1);
+    }, 500); // Debounce search
+    
+    return () => clearTimeout(timer);
+  }, [searchTerm, filters, sortBy, sortOrder]);
+
   // Auto-hide toast after 3 seconds
   useEffect(() => {
     if (toast) {
@@ -66,7 +86,31 @@ export default function ProductsPage() {
     try {
       setIsLoading(true);
       setError(null);
-      const response = await window.pos.products.getAll({ page });
+      
+      // Build query parameters
+      const params = { page };
+      
+      // Add search
+      if (searchTerm.trim()) {
+        params.search = searchTerm.trim();
+      }
+      
+      // Add filters
+      if (filters.is_active !== '') {
+        params.is_active = filters.is_active === 'true';
+      }
+      if (filters.category) {
+        params.category = filters.category;
+      }
+      if (filters.low_stock) {
+        params.low_stock = true;
+      }
+      
+      // Add sorting
+      params.sort_by = sortBy;
+      params.sort_order = sortOrder;
+      
+      const response = await window.pos.products.getAll(params);
       
       // Handle different response formats
       const productData = response?.data?.data || response?.data || response || [];
@@ -100,7 +144,7 @@ export default function ProductsPage() {
     if (product) {
       setEditingProduct(product);
       setFormData({
-        branch_id: product.branch_id || 1,
+        branch_id: product.branch_id || currentUser?.branch_id || 1,
         sku: product.sku || '',
         name: product.name || '',
         description: product.description || '',
@@ -114,7 +158,7 @@ export default function ProductsPage() {
     } else {
       setEditingProduct(null);
       setFormData({
-        branch_id: 1,
+        branch_id: currentUser?.branch_id || 1,
         sku: '',
         name: '',
         description: '',
@@ -134,7 +178,7 @@ export default function ProductsPage() {
     setShowModal(false);
     setEditingProduct(null);
     setFormData({
-      branch_id: 1,
+      branch_id: currentUser?.branch_id || 1,
       sku: '',
       name: '',
       description: '',
@@ -311,6 +355,86 @@ export default function ProductsPage() {
             Add Product
           </button>
         )}
+      </div>
+
+      {/* Search and Filters */}
+      <div className="filters-section">
+        <div className="search-box">
+          <input
+            type="text"
+            placeholder="Search by name, SKU, or description..."
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            className="search-input"
+          />
+        </div>
+        
+        <div className="filters-row">
+          <select
+            value={filters.is_active}
+            onChange={(e) => setFilters({ ...filters, is_active: e.target.value })}
+            className="filter-select"
+          >
+            <option value="">All Status</option>
+            <option value="true">Active Only</option>
+            <option value="false">Inactive Only</option>
+          </select>
+
+          <select
+            value={filters.category}
+            onChange={(e) => setFilters({ ...filters, category: e.target.value })}
+            className="filter-select"
+          >
+            <option value="">All Categories</option>
+            <option value="Beverages">Beverages</option>
+            <option value="Bakery">Bakery</option>
+            <option value="Dairy">Dairy</option>
+            <option value="Snacks">Snacks</option>
+            <option value="Groceries">Groceries</option>
+          </select>
+
+          <label className="checkbox-filter">
+            <input
+              type="checkbox"
+              checked={filters.low_stock}
+              onChange={(e) => setFilters({ ...filters, low_stock: e.target.checked })}
+            />
+            <span>Low Stock Only</span>
+          </label>
+
+          <select
+            value={sortBy}
+            onChange={(e) => setSortBy(e.target.value)}
+            className="filter-select"
+          >
+            <option value="created_at">Sort by: Date</option>
+            <option value="name">Sort by: Name</option>
+            <option value="sku">Sort by: SKU</option>
+            <option value="price">Sort by: Price</option>
+            <option value="stock_qty">Sort by: Stock</option>
+          </select>
+
+          <select
+            value={sortOrder}
+            onChange={(e) => setSortOrder(e.target.value)}
+            className="filter-select sort-order"
+          >
+            <option value="asc">Ascending</option>
+            <option value="desc">Descending</option>
+          </select>
+
+          {(searchTerm || filters.is_active || filters.category || filters.low_stock) && (
+            <button
+              onClick={() => {
+                setSearchTerm('');
+                setFilters({ is_active: '', category: '', low_stock: false });
+              }}
+              className="btn-clear-filters"
+            >
+              Clear Filters
+            </button>
+          )}
+        </div>
       </div>
 
       {error && (

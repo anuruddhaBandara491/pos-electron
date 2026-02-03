@@ -7,6 +7,7 @@ import log from '../utils/logger';
 export default function ProductsPage() {
   const { currentUser, userRoles, userPermissions } = useContext(AuthContext);
   const [products, setProducts] = useState([]);
+  const [categories, setCategories] = useState([]);
   const [pagination, setPagination] = useState({
     total: 0,
     per_page: 15,
@@ -59,6 +60,7 @@ export default function ProductsPage() {
 
   useEffect(() => {
     loadProducts();
+    loadCategories();
   }, []);
 
   // Reload when search or filters change
@@ -137,6 +139,18 @@ export default function ProductsPage() {
       setProducts([]);
     } finally {
       setIsLoading(false);
+    }
+  };
+
+  const loadCategories = async () => {
+    try {
+      const response = await window.pos.categories.getAll();
+      const categoryData = response?.data || response || [];
+      setCategories(Array.isArray(categoryData) ? categoryData : []);
+    } catch (err) {
+      log.error('Error loading categories:', err);
+      // Don't show error for categories - just use empty array
+      setCategories([]);
     }
   };
 
@@ -386,11 +400,9 @@ export default function ProductsPage() {
             className="filter-select"
           >
             <option value="">All Categories</option>
-            <option value="Beverages">Beverages</option>
-            <option value="Bakery">Bakery</option>
-            <option value="Dairy">Dairy</option>
-            <option value="Snacks">Snacks</option>
-            <option value="Groceries">Groceries</option>
+            {categories.map(cat => (
+              <option key={cat.id} value={cat.name}>{cat.name}</option>
+            ))}
           </select>
 
           <label className="checkbox-filter">
@@ -568,15 +580,22 @@ export default function ProductsPage() {
 
                 <div className="form-group">
                   <label htmlFor="category">Category *</label>
-                  <input
-                    type="text"
+                  <select
                     id="category"
                     name="category"
                     value={formData.category}
                     onChange={handleInputChange}
-                    placeholder="e.g., Beverages"
                     className={formErrors.category ? 'error' : ''}
-                  />
+                  >
+                    <option value="">Select a category</option>
+                    {categories.length > 0 ? (
+                      categories.map(cat => (
+                        <option key={cat.id} value={cat.name}>{cat.name}</option>
+                      ))
+                    ) : (
+                      <option value="" disabled>No categories available</option>
+                    )}
+                  </select>
                   {formErrors.category && <span className="error-text">{formErrors.category}</span>}
                 </div>
               </div>

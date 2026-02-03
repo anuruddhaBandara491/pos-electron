@@ -11,6 +11,7 @@ import { useVersionCheck } from './hooks/useVersionCheck';
 import LoginPage from './pages/LoginPage';
 import DashboardPage from './pages/DashboardPage';
 import ProductsPage from './pages/ProductsPage';
+import CategoriesPage from './pages/CategoriesPage';
 import OrdersPage from './pages/OrdersPage';
 import ReportsPage from './pages/ReportsPage';
 import SettingsPage from './pages/SettingsPage';
@@ -284,6 +285,19 @@ function App() {
                         requiredPermissions={['view_products']}
                         fallbackPath={authService.getDefaultRoute() || '/pos'}
                         element={<ProductsPage />}
+                      />
+                    }
+                  />
+
+                  {/* Categories Management - view_categories permission (managers/admins) */}
+                  <Route 
+                    path="/categories" 
+                    element={
+                      <ProtectedRoute
+                        user={currentUser}
+                        requiredPermissions={['view_categories']}
+                        fallbackPath={authService.getDefaultRoute() || '/pos'}
+                        element={<CategoriesPage />}
                       />
                     }
                   />

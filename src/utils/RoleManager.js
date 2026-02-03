@@ -40,6 +40,12 @@ class RoleManager {
     MANAGE_STOCK: 'manage_stock',
     VIEW_STOCK: 'view_stock',
 
+    // Categories (4)
+    VIEW_CATEGORIES: 'view_categories',
+    CREATE_CATEGORY: 'create_category',
+    EDIT_CATEGORY: 'edit_category',
+    DELETE_CATEGORY: 'delete_category',
+
     // Users (5)
     VIEW_USERS: 'view_users',
     CREATE_USER: 'create_user',
@@ -70,7 +76,8 @@ class RoleManager {
       'record_payment',
       'view_payments',
       'view_products',
-      'view_stock'
+      'view_stock',
+      'view_categories'
     ],
     'manager': [
       // All cashier permissions
@@ -88,6 +95,10 @@ class RoleManager {
       'create_product',
       'edit_product',
       'manage_stock',
+      'view_categories',
+      'create_category',
+      'edit_category',
+      'delete_category',
       'view_users',
       'create_user',
       'edit_user',
@@ -111,6 +122,10 @@ class RoleManager {
       'delete_product',
       'manage_stock',
       'view_stock',
+      'view_categories',
+      'create_category',
+      'edit_category',
+      'delete_category',
       'view_users',
       'create_user',
       'edit_user',
@@ -139,6 +154,7 @@ class RoleManager {
     '/pos': ['view_orders', 'create_order'],
     '/orders': ['view_orders'],
     '/products': ['view_products'],
+    '/categories': ['view_categories'],
     '/reports': ['view_reports'],
     '/dashboard': ['view_reports', 'manage_settings'],
     '/settings': ['manage_settings'],

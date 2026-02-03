@@ -58,6 +58,17 @@ const secureApi = {
   },
 
   /* ==========
+     CATEGORIES APIs
+     ========== */
+  categories: {
+    getAll: (params) => ipcRenderer.invoke('categories:getAll', params),
+    getById: (id) => ipcRenderer.invoke('categories:getById', id),
+    create: (category) => ipcRenderer.invoke('categories:create', category),
+    update: (id, category) => ipcRenderer.invoke('categories:update', id, category),
+    delete: (id) => ipcRenderer.invoke('categories:delete', id),
+  },
+
+  /* ==========
      APP APIs
      ========== */
   app: {

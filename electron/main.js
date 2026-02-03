@@ -304,6 +304,112 @@ ipcMain.handle('products:toggleStatus', async (_event, id) => {
   }
 });
 
+// Categories: Get All
+ipcMain.handle('categories:getAll', async (_event, params) => {
+  try {
+    if (!authToken) {
+      throw new Error('Not authenticated');
+    }
+
+    const response = await axios.get(`${apiUrl}/categories`, {
+      params: params || {},
+      timeout: 10000,
+      headers: {
+        Authorization: `Bearer ${authToken}`
+      }
+    });
+
+    return response.data;
+  } catch (error) {
+    console.error('[IPC] Get categories failed:', error.message);
+    throw new Error(error.response?.data?.message || 'Failed to fetch categories');
+  }
+});
+
+// Categories: Get By ID
+ipcMain.handle('categories:getById', async (_event, id) => {
+  try {
+    if (!authToken) {
+      throw new Error('Not authenticated');
+    }
+
+    const response = await axios.get(`${apiUrl}/categories/${id}`, {
+      timeout: 10000,
+      headers: {
+        Authorization: `Bearer ${authToken}`
+      }
+    });
+
+    return response.data;
+  } catch (error) {
+    console.error('[IPC] Get category failed:', error.message);
+    throw new Error(error.response?.data?.message || 'Failed to fetch category');
+  }
+});
+
+// Categories: Create
+ipcMain.handle('categories:create', async (_event, category) => {
+  try {
+    if (!authToken) {
+      throw new Error('Not authenticated');
+    }
+
+    const response = await axios.post(`${apiUrl}/categories`, category, {
+      timeout: 10000,
+      headers: {
+        Authorization: `Bearer ${authToken}`
+      }
+    });
+
+    return response.data;
+  } catch (error) {
+    console.error('[IPC] Create category failed:', error.message);
+    throw new Error(error.response?.data?.message || 'Failed to create category');
+  }
+});
+
+// Categories: Update
+ipcMain.handle('categories:update', async (_event, id, category) => {
+  try {
+    if (!authToken) {
+      throw new Error('Not authenticated');
+    }
+
+    const response = await axios.put(`${apiUrl}/categories/${id}`, category, {
+      timeout: 10000,
+      headers: {
+        Authorization: `Bearer ${authToken}`
+      }
+    });
+
+    return response.data;
+  } catch (error) {
+    console.error('[IPC] Update category failed:', error.message);
+    throw new Error(error.response?.data?.message || 'Failed to update category');
+  }
+});
+
+// Categories: Delete
+ipcMain.handle('categories:delete', async (_event, id) => {
+  try {
+    if (!authToken) {
+      throw new Error('Not authenticated');
+    }
+
+    const response = await axios.delete(`${apiUrl}/categories/${id}`, {
+      timeout: 10000,
+      headers: {
+        Authorization: `Bearer ${authToken}`
+      }
+    });
+
+    return response.data;
+  } catch (error) {
+    console.error('[IPC] Delete category failed:', error.message);
+    throw new Error(error.response?.data?.message || 'Failed to delete category');
+  }
+});
+
 /**
  * ================================
  * APP LIFECYCLE

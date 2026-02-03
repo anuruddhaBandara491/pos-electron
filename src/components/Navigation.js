@@ -57,6 +57,13 @@ export default function Navigation({ user, onLogout }) {
               </li>
             )}
 
+            {/* Categories - Requires view_categories permission */}
+            {hasPermission('view_categories') && (
+              <li>
+                <Link to="/categories">Categories</Link>
+              </li>
+            )}
+
             {/* Orders/POS - All users with view_orders permission */}
             {hasPermission('view_orders') && (
               <li>

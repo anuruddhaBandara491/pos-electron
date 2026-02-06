@@ -326,13 +326,24 @@ export default function OrderDetailsPage() {
         window.pos.orders.getPaymentsSummary(orderId)
       ]);
 
-      const paymentsData = paymentsResponse?.data || paymentsResponse || [];
-      setPayments(Array.isArray(paymentsData) ? paymentsData : []);
+      // Extract payments array from nested response structure
+      // Backend returns: { success: true, data: { payments: [...] } }
+      const responseData = paymentsResponse?.data || paymentsResponse || {};
+      const paymentsArray = responseData.payments || responseData.data?.payments || [];
+      
+      // Map backend field names to frontend expectations
+      const mappedPayments = paymentsArray.map(payment => ({
+        ...payment,
+        payment_method: payment.method || payment.payment_method,
+        payment_date: payment.created_at || payment.payment_date
+      }));
+      
+      setPayments(mappedPayments);
 
       const summaryData = summaryResponse?.data || summaryResponse;
       setPaymentsSummary(summaryData);
 
-      log.info('Payment history loaded:', { payments: paymentsData, summary: summaryData });
+      log.info('Payment history loaded:', { payments: mappedPayments, summary: summaryData });
 
     } catch (err) {
       log.error('Error loading payment history:', err);

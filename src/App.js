@@ -307,28 +307,28 @@ function App() {
                     }
                   />
 
-                  {/* Orders - POS Order Entry Screen */}
+                  {/* Orders - Order List */}
                   <Route 
                     path="/orders" 
                     element={
                       <ProtectedRoute
                         user={currentUser}
-                        requiredPermissions={['create_order']}
+                        requiredPermissions={['view_orders']}
                         fallbackPath={authService.getDefaultRoute() || '/dashboard'}
-                        element={<POSOrder />}
+                        element={<OrderListPage />}
                       />
                     }
                   />
 
-                  {/* Order List - Manager/Admin View */}
+                  {/* Add New Order - POS Order Entry Screen */}
                   <Route 
-                    path="/orders/list" 
+                    path="/orders/new" 
                     element={
                       <ProtectedRoute
                         user={currentUser}
-                        requiredPermissions={['view_orders']}
+                        requiredPermissions={['create_order']}
                         fallbackPath={authService.getDefaultRoute() || '/orders'}
-                        element={<OrderListPage />}
+                        element={<POSOrder />}
                       />
                     }
                   />

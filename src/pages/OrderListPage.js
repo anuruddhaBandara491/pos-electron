@@ -271,8 +271,8 @@ export default function OrderListPage() {
       <div className="page-header">
         <h1>Orders</h1>
         {canCreateOrders && (
-          <button className="create-btn" onClick={handleOpenModal}>
-            + Create Order
+          <button className="create-btn" onClick={() => navigate('/orders/new')}>
+            + Add Order
           </button>
         )}
       </div>

@@ -12,7 +12,12 @@ import LoginPage from './pages/LoginPage';
 import DashboardPage from './pages/DashboardPage';
 import ProductsPage from './pages/ProductsPage';
 import CategoriesPage from './pages/CategoriesPage';
+import OrderListPage from './pages/OrderListPage';
+import OrderCreatePage from './pages/OrderCreatePage';
+import OrderDetailsPage from './pages/OrderDetailsPage';
 import OrdersPage from './pages/OrdersPage';
+import POSOrderEntry from './pages/POSOrderEntry';
+import POSOrder from './components/POSOrder';
 import ReportsPage from './pages/ReportsPage';
 import SettingsPage from './pages/SettingsPage';
 
@@ -302,22 +307,74 @@ function App() {
                     }
                   />
 
-                  {/* Orders/POS - view_orders permission (all users) */}
+                  {/* Orders - POS Order Entry Screen */}
                   <Route 
                     path="/orders" 
                     element={
                       <ProtectedRoute
                         user={currentUser}
-                        requiredPermissions={['view_orders']}
-                        fallbackPath={authService.getDefaultRoute() || '/pos'}
-                        element={<OrdersPage />}
+                        requiredPermissions={['create_order']}
+                        fallbackPath={authService.getDefaultRoute() || '/dashboard'}
+                        element={<POSOrder />}
                       />
                     }
                   />
 
-                  {/* POS alias for Orders - view_orders permission */}
+                  {/* Order List - Manager/Admin View */}
+                  <Route 
+                    path="/orders/list" 
+                    element={
+                      <ProtectedRoute
+                        user={currentUser}
+                        requiredPermissions={['view_orders']}
+                        fallbackPath={authService.getDefaultRoute() || '/orders'}
+                        element={<OrderListPage />}
+                      />
+                    }
+                  />
+
+                  {/* Create Order - create_order permission */}
+                  <Route 
+                    path="/orders/create" 
+                    element={
+                      <ProtectedRoute
+                        user={currentUser}
+                        requiredPermissions={['create_order']}
+                        fallbackPath={authService.getDefaultRoute() || '/pos'}
+                        element={<OrderCreatePage />}
+                      />
+                    }
+                  />
+
+                  {/* Order Details - view_orders permission */}
+                  <Route 
+                    path="/orders/:orderId" 
+                    element={
+                      <ProtectedRoute
+                        user={currentUser}
+                        requiredPermissions={['view_orders']}
+                        fallbackPath={authService.getDefaultRoute() || '/pos'}
+                        element={<OrderDetailsPage />}
+                      />
+                    }
+                  />
+
+                  {/* POS Order Entry - create_order permission */}
                   <Route 
                     path="/pos" 
+                    element={
+                      <ProtectedRoute
+                        user={currentUser}
+                        requiredPermissions={['create_order']}
+                        fallbackPath="/orders"
+                        element={<POSOrderEntry />}
+                      />
+                    }
+                  />
+
+                  {/* Legacy POS Screen - view_orders permission */}
+                  <Route 
+                    path="/pos-legacy" 
                     element={
                       <ProtectedRoute
                         user={currentUser}

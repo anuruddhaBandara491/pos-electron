@@ -64,10 +64,17 @@ export default function Navigation({ user, onLogout }) {
               </li>
             )}
 
-            {/* Orders/POS - All users with view_orders permission */}
-            {hasPermission('view_orders') && (
+            {/* Orders/POS - All users with create_order permission */}
+            {hasPermission('create_order') && (
               <li>
                 <Link to="/orders">Orders</Link>
+              </li>
+            )}
+
+            {/* Order List - Managers/Admins with view_orders permission */}
+            {hasPermission('view_orders') && (
+              <li>
+                <Link to="/orders/list">Order List</Link>
               </li>
             )}
 

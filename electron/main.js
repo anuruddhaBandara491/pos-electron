@@ -199,6 +199,30 @@ ipcMain.handle('products:getAll', async (_event, params) => {
   }
 });
 
+// Products: Quick Search
+ipcMain.handle('products:quickSearch', async (_event, query) => {
+  try {
+    if (!authToken) {
+      throw new Error('Not authenticated');
+    }
+
+    const response = await axios.get(`${apiUrl}/products/search/quick`, {
+      params: { q: query },
+      timeout: 10000,
+      headers: {
+        Authorization: `Bearer ${authToken}`
+      }
+    });
+
+    console.log('[IPC] Quick search response:', JSON.stringify(response.data, null, 2));
+    return response.data;
+  } catch (error) {
+    console.error('[IPC] Quick search failed:', error.message);
+    console.error('[IPC] Error response:', error.response?.data);
+    throw new Error(error.response?.data?.message || 'Failed to search products');
+  }
+});
+
 // Products: Get By ID
 ipcMain.handle('products:getById', async (_event, id) => {
   try {
@@ -407,6 +431,334 @@ ipcMain.handle('categories:delete', async (_event, id) => {
   } catch (error) {
     console.error('[IPC] Delete category failed:', error.message);
     throw new Error(error.response?.data?.message || 'Failed to delete category');
+  }
+});
+
+// Orders: Create Order
+ipcMain.handle('orders:create', async (_event, order) => {
+  try {
+    if (!authToken) {
+      throw new Error('Not authenticated');
+    }
+
+    const response = await axios.post(`${apiUrl}/orders`, order, {
+      timeout: 10000,
+      headers: {
+        Authorization: `Bearer ${authToken}`
+      }
+    });
+
+    return response.data;
+  } catch (error) {
+    console.error('[IPC] Create order failed:', error.message);
+    
+    // Enhanced error handling for network issues
+    if (error.code === 'ECONNREFUSED' || error.code === 'ENOTFOUND') {
+      throw new Error('Cannot connect to server. Please check your network connection.');
+    }
+    if (error.code === 'ETIMEDOUT' || error.message.includes('timeout')) {
+      throw new Error('Request timed out. The server is not responding.');
+    }
+    
+    throw new Error(error.response?.data?.message || 'Failed to create order');
+  }
+});
+
+// Orders: List Orders
+ipcMain.handle('orders:getAll', async (_event, params) => {
+  try {
+    if (!authToken) {
+      throw new Error('Not authenticated');
+    }
+
+    const response = await axios.get(`${apiUrl}/orders`, {
+      params: params || {},
+      timeout: 10000,
+      headers: {
+        Authorization: `Bearer ${authToken}`
+      }
+    });
+    return response.data;
+  } catch (error) {
+    console.error('[IPC] List orders failed:', error.message);
+    if (error.response) {
+      console.error('[IPC] API Response Status:', error.response.status);
+      console.error('[IPC] API Response Data:', JSON.stringify(error.response.data, null, 2));
+    }
+    
+    // Enhanced error handling for network issues
+    if (error.code === 'ECONNREFUSED' || error.code === 'ENOTFOUND') {
+      throw new Error('Cannot connect to server. Please check your network connection.');
+    }
+    if (error.code === 'ETIMEDOUT' || error.message.includes('timeout')) {
+      throw new Error('Request timed out. The server is not responding.');
+    }
+    
+    throw new Error(error.response?.data?.message || 'Failed to fetch orders');
+  }
+});
+
+// Orders: Get Order
+ipcMain.handle('orders:getById', async (_event, id) => {
+  try {
+    if (!authToken) {
+      throw new Error('Not authenticated');
+    }
+
+    const response = await axios.get(`${apiUrl}/orders/${id}`, {
+      timeout: 10000,
+      headers: {
+        Authorization: `Bearer ${authToken}`
+      }
+    });
+
+    return response.data;
+  } catch (error) {
+    console.error('[IPC] Get order failed:', error.message);
+    throw new Error(error.response?.data?.message || 'Failed to fetch order');
+  }
+});
+
+// Orders: Complete Order
+ipcMain.handle('orders:complete', async (_event, id) => {
+  try {
+    if (!authToken) {
+      throw new Error('Not authenticated');
+    }
+
+    const response = await axios.post(`${apiUrl}/orders/${id}/complete`, {}, {
+      timeout: 10000,
+      headers: {
+        Authorization: `Bearer ${authToken}`
+      }
+    });
+
+    return response.data;
+  } catch (error) {
+    console.error('[IPC] Complete order failed:', error.message);
+    throw new Error(error.response?.data?.message || 'Failed to complete order');
+  }
+});
+
+// Orders: Quick Checkout (Single API call for complete order)
+ipcMain.handle('orders:quickCheckout', async (_event, orderData) => {
+  try {
+    if (!authToken) {
+      throw new Error('Not authenticated');
+    }
+
+    const response = await axios.post(`${apiUrl}/quick-checkout`, orderData, {
+      timeout: 15000,
+      headers: {
+        Authorization: `Bearer ${authToken}`,
+        'Content-Type': 'application/json'
+      }
+    });
+
+    console.log('[IPC] Quick checkout response:', JSON.stringify(response.data, null, 2));
+    return response.data;
+  } catch (error) {
+    console.error('[IPC] Quick checkout failed:', error.message);
+    console.error('[IPC] Error response:', error.response?.data);
+    throw new Error(error.response?.data?.message || 'Failed to complete quick checkout');
+  }
+});
+
+// Orders: Cancel Order
+ipcMain.handle('orders:cancel', async (_event, id) => {
+  try {
+    if (!authToken) {
+      throw new Error('Not authenticated');
+    }
+
+    const response = await axios.post(`${apiUrl}/orders/${id}/cancel`, {}, {
+      timeout: 10000,
+      headers: {
+        Authorization: `Bearer ${authToken}`
+      }
+    });
+
+    return response.data;
+  } catch (error) {
+    console.error('[IPC] Cancel order failed:', error.message);
+    throw new Error(error.response?.data?.message || 'Failed to cancel order');
+  }
+});
+
+// Orders: Add Item to Order
+ipcMain.handle('orders:addItem', async (_event, orderId, item) => {
+  try {
+    if (!authToken) {
+      throw new Error('Not authenticated');
+    }
+
+    const response = await axios.post(`${apiUrl}/orders/${orderId}/items`, item, {
+      timeout: 10000,
+      headers: {
+        Authorization: `Bearer ${authToken}`
+      }
+    });
+
+    return response.data;
+  } catch (error) {
+    console.error('[IPC] Add item to order failed:', error.message);
+    throw new Error(error.response?.data?.message || 'Failed to add item to order');
+  }
+});
+
+// Orders: Remove Item from Order
+ipcMain.handle('orders:removeItem', async (_event, orderId, itemId) => {
+  try {
+    if (!authToken) {
+      throw new Error('Not authenticated');
+    }
+
+    const response = await axios.delete(`${apiUrl}/orders/${orderId}/items/${itemId}`, {
+      timeout: 10000,
+      headers: {
+        Authorization: `Bearer ${authToken}`
+      }
+    });
+
+    return response.data;
+  } catch (error) {
+    console.error('[IPC] Remove item from order failed:', error.message);
+    throw new Error(error.response?.data?.message || 'Failed to remove item from order');
+  }
+});
+
+// Orders: Quick Add Item
+ipcMain.handle('orders:quickAddItem', async (_event, orderId, item) => {
+  try {
+    if (!authToken) {
+      throw new Error('Not authenticated');
+    }
+
+    const response = await axios.post(`${apiUrl}/orders/${orderId}/add-item`, item, {
+      timeout: 10000,
+      headers: {
+        Authorization: `Bearer ${authToken}`
+      }
+    });
+
+    return response.data;
+  } catch (error) {
+    console.error('[IPC] Quick add item failed:', error.message);
+    throw new Error(error.response?.data?.message || 'Failed to quick add item');
+  }
+});
+
+// Orders: Quick Pay
+ipcMain.handle('orders:quickPay', async (_event, orderId, paymentData) => {
+  try {
+    if (!authToken) {
+      throw new Error('Not authenticated');
+    }
+
+    const response = await axios.post(`${apiUrl}/orders/${orderId}/quick-pay`, paymentData, {
+      timeout: 10000,
+      headers: {
+        Authorization: `Bearer ${authToken}`
+      }
+    });
+
+    return response.data;
+  } catch (error) {
+    console.error('[IPC] Quick pay failed:', error.message);
+    throw new Error(error.response?.data?.message || 'Failed to process payment');
+  }
+});
+
+// Orders: Get Order Summary
+ipcMain.handle('orders:getSummary', async (_event, orderId) => {
+  try {
+    if (!authToken) {
+      throw new Error('Not authenticated');
+    }
+
+    const response = await axios.get(`${apiUrl}/orders/${orderId}/summary`, {
+      timeout: 10000,
+      headers: {
+        Authorization: `Bearer ${authToken}`
+      }
+    });
+
+    return response.data;
+  } catch (error) {
+    console.error('[IPC] Get order summary failed:', error.message);
+    throw new Error(error.response?.data?.message || 'Failed to fetch order summary');
+  }
+});
+
+// Orders: Get Payments
+ipcMain.handle('orders:getPayments', async (_event, orderId) => {
+  try {
+    if (!authToken) {
+      throw new Error('Not authenticated');
+    }
+
+    const response = await axios.get(`${apiUrl}/orders/${orderId}/payments`, {
+      timeout: 10000,
+      headers: {
+        Authorization: `Bearer ${authToken}`
+      }
+    });
+
+    return response.data;
+  } catch (error) {
+    console.error('[IPC] Get payments failed:', error.message);
+    throw new Error(error.response?.data?.message || 'Failed to fetch payments');
+  }
+});
+
+// Orders: Get Payments Summary
+ipcMain.handle('orders:getPaymentsSummary', async (_event, orderId) => {
+  try {
+    if (!authToken) {
+      throw new Error('Not authenticated');
+    }
+
+    const response = await axios.get(`${apiUrl}/orders/${orderId}/payments/summary`, {
+      timeout: 10000,
+      headers: {
+        Authorization: `Bearer ${authToken}`
+      }
+    });
+
+    return response.data;
+  } catch (error) {
+    console.error('[IPC] Get payments summary failed:', error.message);
+    throw new Error(error.response?.data?.message || 'Failed to fetch payments summary');
+  }
+});
+
+// Orders: Refund Payment
+ipcMain.handle('orders:refundPayment', async (_event, orderId, refundData) => {
+  try {
+    if (!authToken) {
+      throw new Error('Not authenticated');
+    }
+
+    const response = await axios.post(`${apiUrl}/orders/${orderId}/payments/refund`, refundData, {
+      timeout: 10000,
+      headers: {
+        Authorization: `Bearer ${authToken}`
+      }
+    });
+
+    return response.data;
+  } catch (error) {
+    console.error('[IPC] Refund payment failed:', error.message);
+    
+    // Enhanced error handling for network issues
+    if (error.code === 'ECONNREFUSED' || error.code === 'ENOTFOUND') {
+      throw new Error('Cannot connect to server. Please check your network connection.');
+    }
+    if (error.code === 'ETIMEDOUT' || error.message.includes('timeout')) {
+      throw new Error('Request timed out. The server is not responding.');
+    }
+    
+    throw new Error(error.response?.data?.message || 'Failed to process refund');
   }
 });
 
